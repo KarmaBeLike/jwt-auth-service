@@ -12,7 +12,6 @@ import (
 	"github.com/KarmaBeLike/jwt-auth-service/internal/repository"
 	"github.com/KarmaBeLike/jwt-auth-service/pkg"
 
-	"github.com/golang-jwt/jwt/v4"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -59,7 +58,7 @@ func (s *AuthService) GenerateTokens(ctx context.Context, userID, ipAddress stri
 		UserID:        userID,
 		TokenHash:     tokenHash,
 		IPAddress:     ipAddress,
-		AccessTokenID: accessTokenID, // 👈 Сохраняем связку
+		AccessTokenID: accessTokenID,
 		CreatedAt:     time.Now(),
 		ExpiresAt:     time.Now().Add(s.refreshTTL),
 	}
@@ -110,16 +109,6 @@ func (s *AuthService) RefreshTokens(ctx context.Context, refreshTokenFull, curre
 	}
 
 	return s.GenerateTokens(ctx, storedToken.UserID, currentIP)
-}
-
-func (s *AuthService) generateAccessToken(userID, ipAddress string) (string, error) {
-	claims := jwt.MapClaims{
-		"user_id": userID,
-		"ip":      ipAddress,
-		"exp":     time.Now().Add(s.accessTTL).Unix(),
-	}
-	token := jwt.NewWithClaims(jwt.SigningMethodHS512, claims)
-	return token.SignedString(s.jwtSecret)
 }
 
 func (s *AuthService) generateRefreshToken() (string, string, error) {
