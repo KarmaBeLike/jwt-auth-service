@@ -39,9 +39,13 @@ func main() {
 	authService := service.NewAuthService(authRepo, jwtSecret, accessTTL, refreshTTL)
 	authHandler := handler.NewAuthHandler(authService)
 
+	port := os.Getenv("PORT")
+	if port == "" {
+		port = "8080"
+	}
+
 	r := gin.Default()
 	authHandler.RegisterRoutes(r)
 
-	// serverPort := os.Getenv("SERVER_PORT")
-	r.Run("localhost:8080")
+	r.Run("0.0.0.0:" + port)
 }

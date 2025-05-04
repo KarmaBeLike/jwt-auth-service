@@ -1,18 +1,28 @@
-version: "3.9"
+version: '3.8'
+
 services:
-  postgres:
-    container_name: jwt
-    image: postgres:latest
+  db:
+    image: postgres:15
+    container_name: auth_db
+    restart: always
     environment:
-      POSTGRES_DB: ${DB_NAME}
       POSTGRES_USER: ${DB_USER}
       POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_NAME}
     ports:
       - "5432:5432"
     volumes:
-      - "postgres_data:/data/db"
+      - db_data:/var/lib/postgresql/data
 
-  
+  app:
+    build: .
+    container_name: auth_app
+    restart: always
+    env_file: .env
+    ports:
+      - "${PORT}:${PORT}"
+    depends_on:
+      - db
+
 volumes:
-  postgres_data:
-  
+  db_data:
