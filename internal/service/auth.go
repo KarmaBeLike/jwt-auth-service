@@ -5,6 +5,7 @@ import (
 	"crypto/rand"
 	"encoding/base64"
 	"errors"
+	"log"
 	"time"
 
 	"github.com/KarmaBeLike/jwt-auth-service/internal/dto"
@@ -100,7 +101,11 @@ func (s *AuthService) RefreshTokens(ctx context.Context, refreshTokenFull, curre
 	}
 
 	if storedToken.IPAddress != currentIP {
-		pkg.SendMockEmailWarning(storedToken.UserID, storedToken.IPAddress, currentIP)
+		userEmail := "your.target.email@gmail.com"
+		err := pkg.SendEmailWarning(userEmail, storedToken.UserID, storedToken.IPAddress, currentIP)
+		if err != nil {
+			log.Printf("Failed to send warning email: %v", err)
+		}
 	}
 
 	err = s.repo.DeleteRefreshToken(ctx, id)

@@ -2,7 +2,8 @@ package pkg
 
 import (
 	"errors"
-	"log"
+	"fmt"
+	"net/smtp"
 	"strings"
 	"time"
 
@@ -23,8 +24,18 @@ func SplitToken(token string) (string, string, error) {
 	return parts[0], parts[1], nil
 }
 
-func SendMockEmailWarning(email string, oldIP string, newIP string) {
-	log.Printf("[MOCK EMAIL] Security warning to %s: IP address changed from %s to %s\n", email, oldIP, newIP)
+func SendEmailWarning(email string, userID, oldIP string, newIP string) error {
+	from := "your.email@gmail.com"
+	password := "your_generated_app_pass"
+
+	smtpHost := "smtp.gmail.com"
+	smtpPort := "587"
+
+	msg := fmt.Sprintf("Subject: IP Change Warning\n\nUser %s has changed IP from %s to %s", userID, oldIP, newIP)
+
+	auth := smtp.PlainAuth("", from, password, smtpHost)
+
+	return smtp.SendMail(smtpHost+":"+smtpPort, auth, from, []string{email}, []byte(msg))
 }
 
 func GenerateJWT(data dto.JWTData, secret string, ttl time.Duration) (string, error) {
