@@ -56,11 +56,6 @@
 git clone https://github.com/KarmaBeLike/jwt-auth-service.git
 cd jwt-auth-service
 
-# Установка зависимостей
-go mod download
-
-# Компиляция
-go build -o jwt-auth-service ./cmd/app
 ```
 
 ### Конфигурация
