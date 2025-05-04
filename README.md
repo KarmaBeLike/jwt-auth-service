@@ -70,8 +70,7 @@ go build -o jwt-auth-service ./cmd/app
 ### Запуск
 
 ```
-docker-compose up
-go run ./cmd
+docker-compose up --build
 ```
 
 ## API Endpoints
